@@ -9,7 +9,7 @@ here, you will find posts related to my cybersec related activities
 CTF writeups, homelab notes, etc.
 
 ## posts
-- [writeup-1](./posts/writeup-1.html) 
-- [test123](./posts/test123.html)
+- [THM: Brr v1 (Industrial Intrusion CTF 2025)](./posts/ctf/thm-brr_v1-writeup.md) 
+
 
 thank you for visiting my site! (｡･∀･)ﾉﾞ
