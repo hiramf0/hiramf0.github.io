@@ -3,6 +3,32 @@ hr {
   margin-bottom: 20px;
 }
 
+/* GitHub dark code block shell */
+pre {
+  background-color: #161b22 !important;
+  border: 1px solid #30363d !important;
+  border-radius: 6px !important;
+  padding: 16px !important;
+  overflow-x: auto !important;
+  line-height: 1.45 !important;
+  font-size: 85% !important;
+}
+
+pre code.hljs {
+  background: transparent !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+}
+
+/* Inline code */
+code:not(pre code) {
+  background-color: #6e768166 !important;
+  border-radius: 6px !important;
+  padding: 0.2em 0.4em !important;
+  font-size: 85% !important;
+  color: #e6edf3 !important;
+}
+
 /* Post navigation links */
 .post_navi {
   display: flex;
