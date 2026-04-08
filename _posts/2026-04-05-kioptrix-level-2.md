@@ -1,4 +1,4 @@
-# Kioptrix Level 2 (1.2)
+# Kioptrix Level 2 (1.1)
 
 This machine was released in 2011, being the second machine belonging to the Kioptrix series of vulnerable machines in Vulnhub. <br>
 Here's a link to the machine: <a href="https://www.vulnhub.com/entry/kioptrix-level-11-2,23/">https://www.vulnhub.com/entry/kioptrix-level-11-2,23/</a>. 
