@@ -365,7 +365,7 @@ loneferret@Kioptrix3:~$ sudo ht /etc/sudoers
 <img width="912" height="472" alt="image" src="https://github.com/user-attachments/assets/29b23997-f193-45ed-91e3-e81d96048166" /> <br>
 
 Running `ht` like that opens the editor in hex mode. You can use F4 to edit, F8 to resize in order to type, and set to 700 to have some writing space. <br>
-I tried adding `loneferret ALL=(ALL:ALL) ALL` at the end in hexadecimal. For some reason, the file was not able to read it. Let's simulate this by adding a bunch of characters to simulate a typo or using the wrong payload:
+I tried adding `loneferret ALL=(ALL:ALL) ALL` at the end in hexadecimal. For some reason, the file was not able to read it. Let's simulate this by adding a bunch of characters to simulate a typo or using the wrong payload: <br>
 <img width="616" height="186" alt="image" src="https://github.com/user-attachments/assets/0ff6ab7a-40ad-4ad0-860e-98c72ece72fc" /> <br>
 
 Save with Alt+F > Save. <br>
